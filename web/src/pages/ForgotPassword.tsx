@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,6 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!email) {
       toast({
         title: "Campo obrigatório",
@@ -24,7 +22,6 @@ const ForgotPassword = () => {
       });
       return;
     }
-
     if (!email.includes('@')) {
       toast({
         title: "Email inválido",
@@ -33,19 +30,36 @@ const ForgotPassword = () => {
       });
       return;
     }
-
     setIsLoading(true);
-    // Simular chamada de API
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
-
-    toast({
-      title: "Instruções enviadas!",
-      description: `Se uma conta com o email ${email} existir, você receberá instruções para redefinir sua senha.`,
-    });
-    // Idealmente, não redirecionar ou dar feedback se o email existe ou não por segurança.
-    // Mas para fins de exemplo, vamos redirecionar para o login.
-    navigate('/login'); 
+    try {
+      const res = await fetch('http://localhost:3333/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast({
+          title: "Instruções enviadas!",
+          description: `Se uma conta com o email ${email} existir, você receberá instruções para redefinir sua senha.`,
+        });
+        navigate('/login');
+      } else {
+        toast({
+          title: "Erro ao enviar",
+          description: data.message || 'Não foi possível enviar as instruções. Tente novamente.',
+          variant: 'destructive'
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Erro de conexão",
+        description: 'Não foi possível conectar ao servidor.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -56,15 +70,12 @@ const ForgotPassword = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar para o Login
           </Link>
-          
           <div className="flex justify-center mb-4">
             <Mail className="w-16 h-16 text-purple-600" />
           </div>
-          
           <h1 className="text-3xl font-bold gradient-text mb-2">Esqueceu sua senha?</h1>
           <p className="text-gray-600">Sem problemas! Insira seu email abaixo para receber as instruções de recuperação.</p>
         </div>
-
         <Card className="glass-card animate-scale-in">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Recuperar Senha</CardTitle>
@@ -72,7 +83,6 @@ const ForgotPassword = () => {
               Nós enviaremos um link de redefinição para o seu email.
             </CardDescription>
           </CardHeader>
-          
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -90,7 +100,6 @@ const ForgotPassword = () => {
                   />
                 </div>
               </div>
-
               <Button
                 type="submit"
                 className="w-full btn-gradient"

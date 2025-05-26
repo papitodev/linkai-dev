@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -14,13 +13,11 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
   const navigate = useNavigate();
-  // const { token } = useParams<{ token: string }>(); // Para usar quando tiver o token na URL
+  const { token } = useParams<{ token: string }>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!password || !confirmPassword) {
       toast({
         title: "Campos obrigatórios",
@@ -29,7 +26,6 @@ const ResetPassword = () => {
       });
       return;
     }
-
     if (password !== confirmPassword) {
       toast({
         title: "Senhas não coincidem",
@@ -38,27 +34,44 @@ const ResetPassword = () => {
       });
       return;
     }
-
     if (password.length < 6) {
-        toast({
-            title: "Senha muito curta",
-            description: "A senha deve ter pelo menos 6 caracteres.",
-            variant: "destructive"
-        });
-        return;
+      toast({
+        title: "Senha muito curta",
+        description: "A senha deve ter pelo menos 6 caracteres.",
+        variant: "destructive"
+      });
+      return;
     }
-
     setIsLoading(true);
-    // Simular chamada de API
-    // console.log("Token de redefinição:", token); // Usar o token na chamada real
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
-
-    toast({
-      title: "Senha redefinida!",
-      description: "Sua senha foi alterada com sucesso. Você já pode fazer login.",
-    });
-    navigate('/login');
+    try {
+      const res = await fetch(`http://localhost:3333/api/auth/reset-password/${token}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast({
+          title: "Senha redefinida!",
+          description: "Sua senha foi alterada com sucesso. Você já pode fazer login.",
+        });
+        navigate('/login');
+      } else {
+        toast({
+          title: "Erro ao redefinir",
+          description: data.message || 'Não foi possível redefinir a senha. Tente novamente.',
+          variant: 'destructive'
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Erro de conexão",
+        description: 'Não foi possível conectar ao servidor.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -75,7 +88,6 @@ const ResetPassword = () => {
           <h1 className="text-3xl font-bold gradient-text mb-2">Redefinir Senha</h1>
           <p className="text-gray-600">Crie uma nova senha para sua conta.</p>
         </div>
-
         <Card className="glass-card animate-scale-in">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Nova Senha</CardTitle>
@@ -83,7 +95,6 @@ const ResetPassword = () => {
               Escolha uma senha forte e segura.
             </CardDescription>
           </CardHeader>
-          
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -108,7 +119,6 @@ const ResetPassword = () => {
                   </button>
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">Confirmar Nova Senha</Label>
                 <div className="relative">
@@ -131,7 +141,6 @@ const ResetPassword = () => {
                   </button>
                 </div>
               </div>
-
               <Button
                 type="submit"
                 className="w-full btn-gradient"
