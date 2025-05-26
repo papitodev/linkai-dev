@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    container_name: linkai-db
+    image: mongo:5.0
+    networks: 
+      - skynet
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+
+  mongoxp:
+    container_name: mongo-express
+    image: mongo-express
+    networks: 
+      - skynet
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017/
+      - ME_CONFIG_BASICAUTH_USERNAME=dba
+      - ME_CONFIG_BASICAUTH_PASSWORD=dba
+    links:
+      - mongodb
+    restart: unless-stopped
+    ports:
+      - "17017:8081"
+
+networks: 
+  skynet:
+    driver: bridge
