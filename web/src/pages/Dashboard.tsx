@@ -12,6 +12,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { API_LINKS, API_SOCIALS, API_PROFILE, MAX_CUSTOM_LINKS, MAX_AVATAR_SIZE_BYTES, MAX_AVATAR_SIZE_MB } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 
+import EmojiPicker from '@/components/EmojiPicker';
+import { EMOJI_LIST } from '@/components/emojiList';
+
 interface CustomLink {
   id: string;
   name: string;
@@ -52,6 +55,10 @@ const Dashboard = () => {
     username: '',
     bio: ''
   });
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const [showEmojiLegend, setShowEmojiLegend] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -555,7 +562,7 @@ const Dashboard = () => {
                         }`}
                     >
                       <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{link.emoji}</span>
+                        <span className="text-2xl">{link.emoji || '🔗'}</span>
                         <div>
                           <h4 className="font-medium">{link.name}</h4>
                           <p className="text-sm text-gray-600">{link.url}</p>
@@ -760,14 +767,36 @@ const Dashboard = () => {
             </div>
             <div className="space-y-2">
               <Label>Emoji (opcional)</Label>
-              <div className="flex items-center space-x-2">
-                <Input
-                  id="newLinkEmoji"
-                  value={newLinkEmoji}
-                  onChange={(e) => setNewLinkEmoji(e.target.value)}
-                  placeholder="🔗"
-                />
+              <div className="relative flex items-center space-x-2">
+                <button
+                  type="button"
+                  ref={emojiButtonRef}
+                  className="w-12 h-12 flex items-center justify-center text-2xl border rounded-full shadow bg-white hover:bg-purple-50 transition"
+                  onClick={() => setShowEmojiPicker((v) => !v)}
+                  aria-label="Escolher emoji"
+                >
+                  {newLinkEmoji || '🔗'}
+                </button>
+                {showEmojiPicker && (
+                  <div className="absolute left-0 top-14 z-50">
+                    <EmojiPicker
+                      onSelect={(emoji) => {
+                        setNewLinkEmoji(emoji);
+                        setShowEmojiPicker(false);
+                      }}
+                      onClose={() => setShowEmojiPicker(false)}
+                    />
+                  </div>
+                )}
+                <input type="hidden" value={newLinkEmoji} name="emoji" />
               </div>
+              {/* <button
+                type="button"
+                className="text-xs text-purple-600 underline mt-2"
+                onClick={() => setShowEmojiLegend(true)}
+              >
+                Ver todos os emojis
+              </button> */}
             </div>
             <div className="flex justify-end space-x-2 pt-4">
               <Button
@@ -793,6 +822,29 @@ const Dashboard = () => {
               </Button>
             </div>
           </div>
+          {/* Modal de legenda de emojis */}
+          {showEmojiLegend && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+              <div className="bg-white rounded-xl shadow-2xl p-6 min-w-[700px] w-full max-w-2xl relative animate-fade-in">
+                <h2 className="text-lg font-bold mb-4">Tabela de Emojis</h2>
+                <div className="grid grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+                  {EMOJI_LIST.map(({ emoji, name }) => (
+                    <div key={emoji + name} className="flex flex-col items-center text-center">
+                      <span className="text-2xl mb-1">{emoji}</span>
+                      <span className="text-xs text-gray-600 break-words">{name}</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 text-gray-500 hover:text-purple-600 text-sm font-bold px-2 py-1"
+                  onClick={() => setShowEmojiLegend(false)}
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
