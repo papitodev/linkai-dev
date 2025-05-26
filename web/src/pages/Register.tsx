@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast';
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -29,10 +30,28 @@ const Register = () => {
   };
 
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.name || !formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos.",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      toast({
+        title: "Username inválido",
+        description: "O username deve conter apenas letras, números e underscores.",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    if (formData.username.length < 3) {
+      toast({
+        title: "Username muito curto",
+        description: "O username deve ter pelo menos 3 caracteres.",
         variant: "destructive"
       });
       return false;
@@ -76,7 +95,7 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.email, formData.username, '', formData.password);
       toast({
         title: "Conta criada com sucesso!",
         description: "Bem-vindo ao Linkaí. Agora você pode criar seu perfil."
@@ -129,11 +148,22 @@ const Register = () => {
                   id="name"
                   name="name"
                   type="text"
-                  placeholder="Seu nome completo"
+                  placeholder="Como você gostaria de ser chamado?"
                   value={formData.name}
                   onChange={handleInputChange}
                   className="input-glass"
-                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="Escolha um @username único (ex: superdev_123)"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  className="input-glass"
                 />
               </div>
 
@@ -142,11 +172,10 @@ const Register = () => {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="seu@email.com"
+                  placeholder="Seu melhor e-mail para receber novidades!"
                   value={formData.email}
                   onChange={handleInputChange}
                   className="input-glass"
-                  required
                 />
               </div>
 
@@ -156,11 +185,10 @@ const Register = () => {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Mínimo 6 caracteres"
+                    placeholder="Crie uma senha secreta e segura"
                     value={formData.password}
                     onChange={handleInputChange}
                     className="pr-10 input-glass"
-                    required
                   />
                   <button
                     type="button"
@@ -170,6 +198,9 @@ const Register = () => {
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                <div className="flex justify-end">
+                  <span className="text-xs text-gray-500">Mínimo de 6 caracteres</span>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -178,11 +209,10 @@ const Register = () => {
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirme sua senha"
+                    placeholder="Repita sua senha para garantir!"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     className="pr-10 input-glass"
-                    required
                   />
                   <button
                     type="button"

@@ -83,11 +83,10 @@ const Login = () => {
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Seu usuário"
+                  placeholder="Seu @username incrível"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="input-glass"
-                  required
                 />
               </div>
 
@@ -96,11 +95,10 @@ const Login = () => {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Sua senha"
+                    placeholder="Digite sua senha secreta"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pr-10 input-glass"
-                    required
                   />
                   <button
                     type="button"
@@ -111,14 +109,14 @@ const Login = () => {
                   </button>
                 </div>
 
-                <div className="text-right">
+                {/* <div className="text-right">
                   <Link
                     to="/forgot-password"
                     className="text-sm text-purple-600 hover:text-purple-700 hover:underline"
                   >
                     Esqueci minha senha
                   </Link>
-                </div>
+                </div> */}
               </div>
 
               <Button
