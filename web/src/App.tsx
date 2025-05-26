@@ -13,6 +13,9 @@ import Dashboard from "@/pages/Dashboard";
 import PublicProfile from "@/pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -29,6 +32,9 @@ const App = () => (
               <Route path="/cadastro" element={<Register />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/:username" element={<PublicProfile />} />
+
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
