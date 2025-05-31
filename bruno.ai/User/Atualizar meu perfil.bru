@@ -1,0 +1,24 @@
+meta {
+  name: Atualizar meu perfil
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3333/api/users/profile
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzM1ZDUxYmM4ZTk3NTc4YmIwZmQ1YSIsImlhdCI6MTc0ODE5Njc5NywiZXhwIjoxNzUwNzg4Nzk3fQ.kzqM3GXbcSVQqhy8x651jujHbYo-iRQ6FhzkQSnGF0E
+}
+
+body:json {
+  {
+    "name": "Fernando Papito",
+    "username": "papito",
+    "email": "papito@link.ai",
+    "bio": "Head de QA"
+  }
+}

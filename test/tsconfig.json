@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "CommonJS",
+      "lib": ["ES2020", "DOM"],
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "moduleResolution": "node",
+      "baseUrl": ".",                    // necessário para usar paths
+      "paths": {
+        "@/*": ["./*"]                   // define o alias "@"
+      },
+      "outDir": "dist"
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["node_modules", "dist"]
+  }
+  

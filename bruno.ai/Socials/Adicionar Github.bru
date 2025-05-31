@@ -1,0 +1,22 @@
+meta {
+  name: Adicionar Github
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3333/api/socials
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzM1ZDUxYmM4ZTk3NTc4YmIwZmQ1YSIsImlhdCI6MTc0ODIxMzc5NiwiZXhwIjoxNzUwODA1Nzk2fQ.poOOLSwcoD-8RQY7V8JjLQsSnRgVT4luziicPMAn7wA
+}
+
+body:json {
+  {
+    "platform": "Instagram",
+    "username": "qapapito"
+  }
+}

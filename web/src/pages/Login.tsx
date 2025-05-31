@@ -39,8 +39,8 @@ const Login = () => {
       navigate('/dashboard');
     } catch (error) {
       toast({
-        title: "Erro no login",
-        description: error instanceof Error ? error.message : "Ocorreu um erro inesperado.",
+        title: "Oops!",
+        description: "Algo deu errado com seu login. Por favor, verifique suas credenciais e tente novamente.",
         variant: "destructive"
       });
     } finally {
